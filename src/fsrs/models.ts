@@ -22,20 +22,12 @@ export type Grade = Exclude<Rating, Rating.Manual>;
 
 export interface ReviewLog {
   rating: Rating; // Rating of the review (Again, Hard, Good, Easy)
-  state: State; // State of the review (New, Learning, Review, Relearning)
+  state: State; // State of the card during the review
   due: Date; // Date of the last scheduling
-  stability: number; // Memory stability during the review
+  stability: number; // Stability of the card during the review
   difficulty: number; // Difficulty of the card during the review
-  /**
-   * @deprecated This field will be removed in version 6.0.0
-   */
-  elapsed_days: number; // Number of days elapsed since the last review
-  /**
-   * @deprecated This field will be removed in version 6.0.0
-   */
-  last_elapsed_days: number; // Number of days between the last two reviews
   scheduled_days: number; // Number of days until the next review
-  learning_steps: number; // Keeps track of the current step during the (re)learning stages
+  learning_steps: number; // Current step in the (re)learning stage
   review: Date; // Date of the review
 }
 
@@ -51,16 +43,12 @@ export interface Card {
   due: Date; // Due date
   stability: number; // Stability
   difficulty: number; // Difficulty level
-  /**
-   * @deprecated This field will be removed in version 6.0.0
-   */
-  elapsed_days: number; // Number of days elapsed
   scheduled_days: number; // Number of days scheduled
-  learning_steps: number; // Keeps track of the current step during the (re)learning stages
+  learning_steps: number; // Keeps track of current step during (re)learning stages
   reps: number; // Repetition count
   lapses: number; // Number of lapses or mistakes
   state: State; // Card's state (New, Learning, Review, Relearning)
-  last_review?: Date; // Date of the last review (optional)
+  last_review?: Date; // Date of last review (optional)
 }
 
 export interface CardInput extends Omit<Card, "state" | "due" | "last_review"> {
