@@ -1,0 +1,21 @@
+{
+  "id": "deck_1766293368451_2ysjxc1ow",
+  "name": "Physics",
+  "config": {
+    "defaultRetentionTarget": 0.75,
+    "defaultDailyCapacity": 10
+  },
+  "cards": [
+    {
+      "id": "card_1766293528773_1uz78vojb",
+      "memoryState": {
+        "S": 5.9625482,
+        "difficulty": 4,
+        "t": 0
+      },
+      "due": "2025-12-27T04:11:35.875Z",
+      "lastReviewed": "2025-12-21T05:05:31.711Z",
+      "reviewCount": 1
+    }
+  ]
+}

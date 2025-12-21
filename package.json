@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "module": "src/index.ts",
   "type": "module",
+  "scripts": {
+    "cli": "bun run cli/index.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/prompts": "^2.4.9"
