@@ -181,7 +181,7 @@ describe("Policy Merging", () => {
       const merged = mergePolicyContext(deckConfig, sessionContext, defaultScheduler)
 
       expect(merged.R_target).toBe(0.90) // Deck default
-      expect(merged.scheduler).toBe(deckConfig.defaultScheduler) // Deck default
+      expect(merged.scheduler).toBe(deckConfig.defaultScheduler!) // Deck default
       expect(merged.contextSignals?.environmentQuality).toBe(0.8) // Deck default
     })
 

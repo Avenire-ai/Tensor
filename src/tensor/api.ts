@@ -14,23 +14,38 @@ import {
   ReviewResult,
   SessionContext,
   GlobalStatistics,
-  SerializedDeck,
 } from "./types"
+
+export type { TensorConfig }
 import { Scheduler, SchedulerInput, SchedulerOutput } from "../scheduler/types"
 import { reviewStep, ReviewStepInput } from "./reviewStep"
 import { mergePolicyContext } from "./policyMerge"
 
 /**
  * Tensor class - main public API for Tensor v2
+ * 
+ * The Tensor class provides a high-level interface for managing spaced repetition
+ * learning with advanced features like policy merging, context modulation, and
+ * multiple deck support.
+ * 
+ * @example
+ * ```typescript
+ * const tensor = new Tensor();
+ * const deck = tensor.createDeck("My Deck");
+ * const card = deck.addCard({
+ *   front: "Question",
+ *   back: "Answer"
+ * });
+ * 
+ * const result = deck.reviewCard(card.id, ReviewOutcome.Good);
+ * console.log(`Next review in ${result.schedulingSuggestion.nextInterval} days`);
+ * ```
  */
 export class Tensor {
   private decks: Map<string, Deck>
   private defaultScheduler: Scheduler
-  private config: TensorConfig
-
   constructor(config: TensorConfig = {}) {
     this.decks = new Map()
-    this.config = config
     // If no default scheduler provided, create a simple one
     this.defaultScheduler = config.defaultScheduler ?? new DefaultScheduler()
   }
@@ -38,6 +53,12 @@ export class Tensor {
   /**
    * Review a card directly (without deck)
    * This is the core review function that wraps reviewStep
+   * 
+   * @param memoryState - Current memory state of the card
+   * @param reviewOutcome - The outcome of the review (Good, Hard, Easy, etc.)
+   * @param policyContext - Session context including policy settings
+   * @param now - Current timestamp for scheduling calculations
+   * @returns Review result with updated memory state and scheduling information
    */
   review(
     memoryState: MemoryState,
@@ -90,7 +111,11 @@ export class Tensor {
   }
 
   /**
-   * Create a new deck
+   * Create a new deck with the given name and configuration
+   * 
+   * @param name - Human-readable name for the deck
+   * @param config - Optional deck configuration including policies and settings
+   * @returns The created Deck instance
    */
   createDeck(name: string, config: DeckConfig = {}): Deck {
     const id = `deck_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
@@ -101,20 +126,28 @@ export class Tensor {
 
   /**
    * Get a deck by ID
+   * 
+   * @param id - Unique identifier of the deck
+   * @returns The Deck instance if found, null otherwise
    */
   getDeck(id: string): Deck | null {
     return this.decks.get(id) ?? null
   }
 
   /**
-   * List all decks
+   * List all decks managed by this Tensor instance
+   * 
+   * @returns Array of all Deck instances
    */
   listDecks(): Deck[] {
     return Array.from(this.decks.values())
   }
 
   /**
-   * Remove a deck
+   * Remove a deck by ID
+   * 
+   * @param id - Unique identifier of the deck to remove
+   * @returns True if the deck was removed, false if not found
    */
   removeDeck(id: string): boolean {
     return this.decks.delete(id)
@@ -122,6 +155,9 @@ export class Tensor {
 
   /**
    * Get global statistics across all decks
+   * 
+   * @param now - Current timestamp for statistics calculation (defaults to current time)
+   * @returns Aggregated statistics across all decks
    */
   getGlobalStatistics(now: Date = new Date()): GlobalStatistics {
     const deckStats = Array.from(this.decks.values()).map((deck) =>

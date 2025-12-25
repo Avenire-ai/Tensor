@@ -1,20 +1,39 @@
 {
-  "name": "tensor",
-  "version": "1.0.0",
-  "module": "src/index.ts",
-  "type": "module",
-  "scripts": {
-    "cli": "bun run cli/index.ts"
-  },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "@types/prompts": "^2.4.9"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "dependencies": {
-    "chalk": "^5.6.2",
-    "prompts": "^2.4.2"
-  }
-}
+   "name": "tensor",
+   "version": "1.0.0",
+   "main": "dist/index.js",
+   "module": "dist/index.esm.js",
+   "types": "dist/index.d.ts",
+   "type": "module",
+   "scripts": {
+     "build": "tsc && tsc --module esnext --outDir dist/esm",
+     "dev": "tsc --watch",
+     "cli": "bun run cli/index.ts",
+     "train": "bun run cli/train.ts",
+     "lint": "tsc --noEmit",
+     "typecheck": "tsc --noEmit"
+   },
+   "devDependencies": {
+     "@types/bun": "latest",
+     "@types/prompts": "^2.4.9",
+     "@types/node": "^20.0.0",
+     "typescript": "^5"
+   },
+   "peerDependencies": {
+     "typescript": "^5"
+   },
+   "dependencies": {
+     "chalk": "^5.6.2",
+     "prompts": "^2.4.2"
+   },
+   "exports": {
+     ".": {
+       "types": "./dist/index.d.ts",
+       "import": "./dist/index.js",
+       "require": "./dist/index.cjs"
+     }
+   },
+   "files": [
+     "dist"
+   ]
+ }

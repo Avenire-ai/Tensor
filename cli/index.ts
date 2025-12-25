@@ -22,7 +22,11 @@ if (!existsSync(DECKS_DIR)) {
 
 const tensor = createTensor()
 
-// Load all decks from disk
+/**
+ * Load all decks from disk
+ * 
+ * @returns Map of deck ID to Deck instance
+ */
 function loadDecks(): Map<string, Deck> {
   const decks = new Map<string, Deck>()
   
@@ -58,7 +62,11 @@ function loadDecks(): Map<string, Deck> {
   return decks
 }
 
-// Save a deck to disk
+/**
+ * Save a deck to disk
+ * 
+ * @param deck - The deck to save
+ */
 function saveDeck(deck: Deck): void {
   const filePath = join(DECKS_DIR, `${deck.id}.json`)
   const cards = deck.getAllCards().map(card => ({
@@ -92,7 +100,11 @@ function deleteDeck(deckId: string): void {
   }
 }
 
-// Main menu
+/**
+ * Display the main menu and handle user interaction
+ * 
+ * @param decks - Map of all loaded decks
+ */
 async function showMainMenu(decks: Map<string, Deck>): Promise<void> {
   console.clear()
   console.log(chalk.bold.cyan("╔═══════════════════════════════════════╗"))

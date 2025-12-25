@@ -1,12 +1,9 @@
 import { test, expect, describe } from "bun:test"
-import { Tensor } from "../api"
-import { Deck } from "../deck"
 import { Card } from "../card"
 import { Queue } from "../queue"
-import { createTensor, createMockScheduler } from "../integration"
+import { createTensor } from "../integration"
 import {
   MemoryState,
-  ReviewOutcome,
   SessionContext,
   DeckConfig,
 } from "../types"

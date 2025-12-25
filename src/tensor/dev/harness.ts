@@ -19,7 +19,7 @@ const results = []
 for (const grade of grades) {
   try {
     // Step 1: Compute effective state
-    const { R_eff, t_eff } = computeEffectiveState({
+    const { R_eff } = computeEffectiveState({
       S,
       t,
       early: false,

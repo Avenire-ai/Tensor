@@ -1,11 +1,115 @@
 # Tensor
 
-Tensor is a **memory dynamics engine** for spaced repetition.
+Tensor is a **memory dynamics engine** for spaced repetition systems.
 
-It is not a scheduler-first system, not a UI heuristic, and not a thin wrapper over FSRS.  
+It's not a scheduler-first system, not a UI heuristic, and not a thin wrapper over FSRS.  
 Tensor is built by separating **memory physics**, **policy**, and **scheduling** into strict layers, and enforcing behavior through invariants rather than assumptions.
 
-This repository contains **Tensor v1** — a complete, invariant-locked memory engine.
+This repository contains **Tensor v2** — a complete memory engine with decks, queues, and a clean API perfect for Next.js applications.
+
+## Quick Start
+
+```bash
+npm install tensor
+```
+
+```typescript
+import { Tensor } from 'tensor';
+
+// Create a Tensor instance
+const tensor = new Tensor();
+
+// Create a deck for your cards
+const deck = tensor.createDeck("My Deck", {
+  defaultDailyCapacity: 20
+});
+
+// Add a card
+deck.addCard("card1", {
+  S: 1.0, // stability in days
+  difficulty: 0.0, // 0-1 scale
+  t: 0, // days since last review
+  scheduled_t: undefined
+}, new Date());
+
+// Review a card
+const result = deck.reviewCard("card1", ReviewOutcome.Good);
+console.log(`Next review in ${result.schedulingSuggestion.nextInterval} days`);
+```
+
+## Usage with Next.js
+
+Tensor is designed to work seamlessly with Next.js applications:
+
+```typescript
+// lib/tensor.ts
+import { Tensor, ReviewOutcome } from 'tensor';
+
+export const tensor = new Tensor();
+export { ReviewOutcome };
+
+// pages/api/cards/review.ts
+import { tensor, ReviewOutcome } from '../../../lib/tensor';
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const { cardId, deckId, outcome } = req.body;
+  
+  const deck = tensor.getDeck(deckId);
+  if (!deck) {
+    return res.status(404).json({ error: 'Deck not found' });
+  }
+
+  const result = deck.reviewCard(cardId, ReviewOutcome[outcome]);
+  
+  res.json({ result });
+}
+```
+
+## API Reference
+
+### Tensor Class
+
+The main entry point for the Tensor library.
+
+```typescript
+const tensor = new Tensor(config?: TensorConfig);
+```
+
+#### Methods
+
+- `createDeck(name: string, config?: DeckConfig): Deck` - Create a new deck
+- `getDeck(id: string): Deck | null` - Get a deck by ID
+- `listDecks(): Deck[]` - List all decks
+- `removeDeck(id: string): boolean` - Remove a deck
+- `getGlobalStatistics(now?: Date): GlobalStatistics` - Get aggregated statistics
+
+### Deck Class
+
+Manages a collection of cards with shared policy defaults.
+
+#### Methods
+
+- `addCard(cardId: string, memoryState: MemoryState, due: Date): void` - Add a card
+- `removeCard(cardId: string): void` - Remove a card
+- `getCard(cardId: string): Card | null` - Get a card by ID
+- `reviewCard(cardId: string, outcome: ReviewOutcome, context?: SessionContext): ReviewResult` - Review a card
+- `getQueue(): Queue` - Get the review queue
+- `updateStatistics(now?: Date): DeckStatistics` - Update deck statistics
+
+### Review Outcomes
+
+```typescript
+enum ReviewOutcome {
+  Again = 1,  // Failed review
+  Hard = 2,   // Difficult but passed
+  Good = 3,   // Normal review
+  Easy = 4    // Easy review
+}
+```
 
 ---
 

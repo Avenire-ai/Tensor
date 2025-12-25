@@ -91,7 +91,7 @@ export function validateMemoryState(state: MemoryState): ValidationResult {
  * Migrate from v1 data format to v2
  * This is a placeholder - actual migration would depend on v1 data structure
  */
-export function migrateFromV1(v1Data: any): any {
+export function migrateFromV1(_v1Data: any): any {
   // Placeholder implementation
   // Actual migration would depend on v1 data structure
   return {
@@ -116,4 +116,6 @@ export function createMockScheduler(
     },
   }
 }
+
+
 

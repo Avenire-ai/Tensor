@@ -22,15 +22,40 @@ import { Scheduler } from "../scheduler/types"
 
 /**
  * Deck class representing a collection of cards with shared policy defaults
+ * 
+ * A deck manages a collection of cards, their scheduling queues, and provides
+ * policy defaults that merge with runtime context for personalized learning.
+ * 
+ * @example
+ * ```typescript
+ * const deck = new Deck("deck1", "My Vocabulary", {
+ *   defaultDailyCapacity: 20,
+ *   policies: { adaptiveRetention: { enabled: true } }
+ * }, scheduler);
+ * ```
  */
 export class Deck {
+  /** Unique identifier for this deck */
   id: string
+  /** Human-readable name for this deck */
   name: string
+  /** Configuration settings for this deck */
   config: DeckConfig
+  /** Queue managing card scheduling and review order */
   queue: Queue
+  /** Internal storage of cards in this deck */
   private cards: Map<string, Card>
+  /** Default scheduler used for cards in this deck */
   private defaultScheduler: Scheduler
 
+  /**
+   * Create a new deck instance
+   * 
+   * @param id - Unique identifier for the deck
+   * @param name - Human-readable name for the deck
+   * @param config - Configuration options including policies and daily limits
+   * @param defaultScheduler - Scheduler to use for cards in this deck
+   */
   constructor(
     id: string,
     name: string,
@@ -51,6 +76,10 @@ export class Deck {
 
   /**
    * Add a card to the deck
+   * 
+   * @param cardId - Unique identifier for the card
+   * @param memoryState - Initial memory state of the card
+   * @param due - When the card is due for review
    */
   addCard(cardId: string, memoryState: MemoryState, due: Date): void {
     const card = new Card(cardId, this.id, memoryState, due)
@@ -60,6 +89,8 @@ export class Deck {
 
   /**
    * Remove a card from the deck
+   * 
+   * @param cardId - Unique identifier of the card to remove
    */
   removeCard(cardId: string): void {
     this.cards.delete(cardId)
@@ -68,6 +99,9 @@ export class Deck {
 
   /**
    * Get a card by ID
+   * 
+   * @param cardId - Unique identifier of the card to retrieve
+   * @returns The Card instance if found, null otherwise
    */
   getCard(cardId: string): Card | null {
     return this.cards.get(cardId) ?? null
@@ -184,4 +218,6 @@ export class Deck {
     return this.cards.size
   }
 }
+
+
 
